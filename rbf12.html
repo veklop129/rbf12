@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RBF12 · FC서울 서포터즈</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#CC0000;--red-dark:#990000;--red-dim:#1a0000;
+  --black:#0d0d0d;--surface:#161616;--surface2:#1f1f1f;
+  --border:#222;--text:#eee;--muted:#888;--faint:#444;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--black);color:var(--text);min-height:100vh}
+
+/* NAV */
+nav{background:#000;border-bottom:3px solid var(--red);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:60px;position:sticky;top:0;z-index:300}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}
+.brand-mark{width:38px;height:38px;background:var(--red);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Black Han Sans',sans-serif;font-size:12px;color:#fff;line-height:1.3;text-align:center}
+.brand-name{font-family:'Black Han Sans',sans-serif;font-size:1.2rem;letter-spacing:3px;color:#fff}
+.brand-name em{color:var(--red);font-style:normal}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-menu{display:flex;gap:1.5rem;list-style:none}
+.nav-menu a{color:var(--muted);text-decoration:none;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:color .2s}
+.nav-menu a:hover,.nav-menu a.active{color:var(--red)}
+.nav-user{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.nav-user strong{color:var(--red)}
+.btn-sm{font-size:11px;font-weight:700;letter-spacing:1px;padding:5px 14px;border-radius:2px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;border:1px solid var(--red);color:var(--red);background:none}
+.btn-sm:hover{background:var(--red);color:#fff}
+.btn-sm.fill{background:var(--red);color:#fff}
+.btn-sm.fill:hover{background:var(--red-dark)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--muted);border-radius:2px}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+/* HERO */
+.hero{background:#000;padding:4rem 1.5rem 3rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero-bg{position:absolute;font-family:'Black Han Sans',sans-serif;font-size:min(18vw,160px);color:rgba(204,0,0,0.04);bottom:-1rem;left:50%;transform:translateX(-50%);white-space:nowrap;letter-spacing:8px;pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--red-dim);border:1px solid #330000;border-radius:2px;padding:5px 14px;font-size:11px;color:var(--red);font-weight:700;letter-spacing:3px;margin-bottom:1.2rem}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Black Han Sans',sans-serif;font-size:clamp(2.5rem,8vw,6rem);letter-spacing:6px;line-height:1;margin-bottom:.5rem}
+.hero h1 .r{color:var(--red)}
+.tagline{font-size:11px;color:var(--faint);letter-spacing:4px;margin-bottom:2.5rem}
+.hero-stats{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.hstat .n{font-family:'Black Han Sans',sans-serif;font-size:2rem;color:var(--red);display:block;line-height:1}
+.hstat .l{font-size:11px;color:var(--faint);letter-spacing:1px;margin-top:3px;display:block}
+
+/* WRAP */
+.wrap{max-width:920px;margin:0 auto;padding:2.5rem 1.5rem}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem}
+.sec-head h2{font-family:'Black Han Sans',sans-serif;font-size:1.25rem;letter-spacing:2px;white-space:nowrap}
+.sec-head .rule{flex:1;height:1px;background:var(--border)}
+.sec-head .tag{font-size:10px;color:var(--red);letter-spacing:2px;font-weight:700;white-space:nowrap}
+hr.div{border:none;border-top:1px solid var(--border);margin:0}
+
+/* AUTH MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--surface2);border-top:3px solid var(--red);border-radius:4px;padding:2rem;width:100%;max-width:400px;margin:1rem}
+.modal h3{font-family:'Black Han Sans',sans-serif;font-size:1.2rem;letter-spacing:2px;margin-bottom:1.25rem;color:var(--text)}
+.modal h3 span{color:var(--red)}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.fg label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px}
+.fg input,.fg select,.fg textarea{background:#111;border:1px solid var(--surface2);border-radius:4px;padding:10px 12px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--red)}
+.fg textarea{resize:vertical;min-height:80px}
+.fg select option{background:#111}
+.modal-tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+.mtab{flex:1;font-size:12px;font-weight:700;letter-spacing:1px;padding:8px;border-radius:2px;cursor:pointer;background:var(--surface2);border:none;color:var(--muted);font-family:'Noto Sans KR',sans-serif;transition:all .2s}
+.mtab.on{background:var(--red);color:#fff}
+.modal-close{float:right;background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
+.btn-full{width:100%;padding:12px;background:var(--red);color:#fff;border:none;border-radius:2px;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .2s;margin-top:.5rem}
+.btn-full:hover{background:var(--red-dark)}
+.auth-err{font-size:12px;color:#ff6666;margin-top:.5rem;display:none}
+
+/* SCHEDULE */
+.tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+.tab{font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 16px;border-radius:2px;cursor:pointer;background:var(--surface);border:1px solid var(--surface2);color:var(--muted);transition:all .2s;font-family:'Noto Sans KR',sans-serif}
+.tab.on{background:var(--red);border-color:var(--red);color:#fff}
+.mtbl{width:100%;border-collapse:collapse;font-size:13px}
+.mtbl th{text-align:left;color:var(--faint);font-size:10px;letter-spacing:2px;padding:8px 12px;border-bottom:1px solid var(--border);font-weight:700}
+.mtbl td{padding:11px 12px;border-bottom:1px solid var(--border);color:#ccc;vertical-align:middle}
+.mtbl tr:hover td{background:#1a1a1a}
+.bh{font-size:10px;background:var(--red-dim);color:var(--red);padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:1px;margin-left:6px}
+.ba{font-size:10px;background:#001a1a;color:#009999;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:1px;margin-left:6px}
+.rw{color:var(--red);font-weight:700}
+.rd{color:#CC9900;font-weight:700}
+.rl{color:var(--faint);font-weight:700}
+.sc{font-family:'Black Han Sans',sans-serif;font-size:14px}
+.next-badge{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:1px;animation:pulse 2s infinite;margin-right:6px}
+.next-row td{background:#1a0000!important}
+.fnote{font-size:11px;color:var(--faint);margin-top:10px;letter-spacing:1px}
+
+/* ATTENDANCE */
+.att-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.att-card{background:var(--surface);border:1px solid var(--surface2);border-radius:4px;overflow:hidden}
+.att-card-top{padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
+.att-date{font-family:'Black Han Sans',sans-serif;font-size:1rem;color:var(--red);margin-bottom:4px}
+.att-match{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.att-loc{font-size:11px;color:var(--faint)}
+.att-card-bottom{padding:.75rem 1.25rem}
+.att-summary{display:flex;gap:12px;margin-bottom:.75rem}
+.att-count{font-size:12px;font-weight:700}
+.att-count.go{color:var(--red)}
+.att-count.no{color:var(--faint)}
+.att-my{font-size:12px;color:var(--muted);margin-bottom:.5rem}
+.att-my strong{color:var(--text)}
+.att-btns{display:flex;gap:6px}
+.att-btn{flex:1;font-size:11px;font-weight:700;letter-spacing:1px;padding:7px 4px;border-radius:2px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;border:1px solid var(--surface2);background:var(--surface2);color:var(--muted)}
+.att-btn:hover{border-color:var(--red);color:var(--red)}
+.att-btn.sel-go{background:var(--red);border-color:var(--red);color:#fff}
+.att-btn.sel-no{background:#333;border-color:#555;color:#aaa}
+.att-reason{margin-top:.5rem}
+.att-reason input{background:#111;border:1px solid var(--surface2);border-radius:4px;padding:7px 10px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:12px;outline:none;width:100%;transition:border-color .2s}
+.att-reason input:focus{border-color:var(--red)}
+.att-save{margin-top:.5rem;width:100%;font-size:11px;font-weight:700;letter-spacing:1px;padding:7px;border-radius:2px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;background:var(--red);border:none;color:#fff;transition:background .2s}
+.att-save:hover{background:var(--red-dark)}
+.att-filter{display:flex;gap:8px;margin-bottom:1.25rem}
+
+/* REVIEWS */
+.review-form{background:var(--surface);border:1px solid var(--surface2);border-top:3px solid var(--red);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem}
+.review-list{display:flex;flex-direction:column;gap:1rem}
+.review-card{background:var(--surface);border:1px solid var(--surface2);border-radius:4px;padding:1.25rem}
+.review-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.review-author{font-size:13px;font-weight:700;color:var(--red)}
+.review-date{font-size:11px;color:var(--faint)}
+.review-match{font-size:11px;color:var(--muted);margin-bottom:.5rem;font-weight:700;letter-spacing:1px}
+.review-body{font-size:13px;color:#ccc;line-height:1.7}
+.review-del{font-size:11px;color:var(--faint);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:2px;transition:color .2s}
+.review-del:hover{color:#ff6666}
+.stars{display:flex;gap:4px;margin-bottom:.75rem}
+.star{font-size:20px;cursor:pointer;color:#333;transition:color .2s}
+.star.on{color:#ffcc00}
+
+/* GALLERY */
+.gal-upload{background:var(--surface);border:2px dashed var(--surface2);border-radius:4px;padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:1.5rem}
+.gal-upload:hover{border-color:var(--red)}
+.gal-upload p{font-size:13px;color:var(--muted);margin-top:.5rem}
+.gal-upload input{display:none}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem}
+.gal-item{border:1px solid var(--surface2);border-radius:4px;overflow:hidden;position:relative;cursor:pointer;transition:border-color .2s}
+.gal-item:hover{border-color:var(--red)}
+.gal-item img{width:100%;height:140px;object-fit:cover;display:block;background:var(--surface)}
+.gal-cap{padding:8px 10px;background:var(--surface)}
+.gal-cap .gc-author{font-size:11px;color:var(--red);font-weight:700}
+.gal-cap .gc-date{font-size:10px;color:var(--faint)}
+.gal-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);border:none;color:#fff;border-radius:2px;font-size:11px;padding:2px 7px;cursor:pointer;display:none}
+.gal-item:hover .gal-del{display:block}
+.upload-preview{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;justify-content:center}
+.upload-preview img{height:60px;width:60px;object-fit:cover;border-radius:4px;border:1px solid var(--surface2)}
+
+/* REGISTER */
+.reg-form{background:var(--surface);border:1px solid var(--surface2);border-top:3px solid var(--red);border-radius:4px;padding:2rem;max-width:500px;margin:0 auto}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* CHEER */
+.cheer{background:var(--red);border-radius:4px;padding:1.75rem;text-align:center}
+.cheer-t{font-family:'Black Han Sans',sans-serif;font-size:clamp(1rem,3vw,1.4rem);letter-spacing:4px;color:#fff;line-height:2}
+.cheer-s{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:3px;margin-top:.5rem}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem;color:var(--faint);font-size:13px}
+
+/* LOADING */
+.loading{text-align:center;padding:2rem;color:var(--muted);font-size:13px}
+
+/* FOOTER */
+footer{background:#000;border-top:1px solid var(--border);padding:1.5rem;text-align:center;font-size:11px;color:var(--faint);letter-spacing:1px;line-height:2}
+footer strong{color:var(--red)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .nav-menu{display:none}
+  .hamburger{display:flex}
+  .form-grid-2{grid-template-columns:1fr}
+  .hero-stats{gap:1.5rem}
+  .mtbl th:nth-child(5),.mtbl td:nth-child(5){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand" onclick="goPage('home')">
+    <div class="brand-mark">RBF<br>12</div>
+    <div class="brand-name"><em>RBF</em>12</div>
+  </div>
+  <ul class="nav-menu" id="navMenu">
+    <li><a onclick="goPage('home')" class="active" id="nav-home">홈</a></li>
+    <li><a onclick="goPage('schedule')" id="nav-schedule">경기 일정</a></li>
+    <li><a onclick="goPage('attendance')" id="nav-attendance">출석 체크</a></li>
+    <li><a onclick="goPage('reviews')" id="nav-reviews">경기 후기</a></li>
+    <li><a onclick="goPage('gallery')" id="nav-gallery">갤러리</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-user" id="navUser" style="display:none">
+      <strong id="navUserName"></strong>님
+      <button class="btn-sm" onclick="doLogout()">로그아웃</button>
+    </div>
+    <button class="btn-sm fill" id="navLoginBtn" onclick="openModal('login')">로그인</button>
+  </div>
+</nav>
+
+<!-- AUTH MODAL -->
+<div class="modal-bg" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-tabs">
+      <button class="mtab on" id="tab-login" onclick="switchTab('login')">로그인</button>
+      <button class="mtab" id="tab-register" onclick="switchTab('register')">회원가입</button>
+    </div>
+
+    <!-- 로그인 -->
+    <div id="form-login">
+      <h3><span>RBF</span>12 로그인</h3>
+      <div class="fg"><label>이메일</label><input type="email" id="li-email" placeholder="example@email.com"></div>
+      <div class="fg"><label>비밀번호</label><input type="password" id="li-pw" placeholder="비밀번호"></div>
+      <div class="auth-err" id="li-err"></div>
+      <button class="btn-full" onclick="doLogin()">로그인</button>
+    </div>
+
+    <!-- 회원가입 -->
+    <div id="form-register" style="display:none">
+      <h3><span>RBF</span>12 가입하기</h3>
+      <div class="fg"><label>이름 (닉네임)</label><input type="text" id="rg-name" placeholder="홍길동"></div>
+      <div class="fg"><label>생년월일</label><input type="date" id="rg-birth"></div>
+      <div class="fg"><label>이메일</label><input type="email" id="rg-email" placeholder="example@email.com"></div>
+      <div class="fg"><label>비밀번호 (6자 이상)</label><input type="password" id="rg-pw" placeholder="비밀번호"></div>
+      <div class="auth-err" id="rg-err"></div>
+      <button class="btn-full" onclick="doRegister()">가입하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: HOME ===== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-bg">RBF12</div>
+    <div class="eyebrow"><div class="dot"></div>FC서울 비공식 서포터즈 그룹<div class="dot"></div></div>
+    <h1><span class="r">RBF</span>12</h1>
+    <p class="tagline">RED BELIEVERS FROM 12TH MAN &nbsp;·&nbsp; SINCE 2009</p>
+    <div class="hero-stats">
+      <div class="hstat"><span class="n" id="memberCount">-</span><span class="l">전체 인원</span></div>
+      <div class="hstat"><span class="n">2009</span><span class="l">창단 연도</span></div>
+      <div class="hstat"><span class="n">N석</span><span class="l">응원 구역</span></div>
+      <div class="hstat"><span class="n">1위</span><span class="l">현재 순위</span></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="cheer">
+      <div class="cheer-t">RBF12, 끝까지 함께!<br>N석에서, 12번째 선수로!</div>
+      <div class="cheer-s">WE ARE RBF12 · FOREVER RED · ALWAYS SEOUL · SINCE 2009</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: SCHEDULE ===== -->
+<div class="page" id="page-schedule">
+  <div class="wrap">
+    <div class="sec-head"><h2>2026 K리그1 경기 일정</h2><div class="rule"></div><div class="tag">FC SEOUL</div></div>
+    <div class="tabs">
+      <button class="tab on" onclick="showSchTab('past',this)">지난 경기</button>
+      <button class="tab" onclick="showSchTab('upcoming',this)">앞으로의 경기</button>
+    </div>
+    <div id="sch-past">
+      <table class="mtbl">
+        <thead><tr><th>날짜</th><th>홈/원정</th><th>상대</th><th>결과</th><th>스코어</th></tr></thead>
+        <tbody>
+          <tr><td>03.22 일</td><td>홈<span class="bh">H</span></td><td>광주 FC</td><td class="rw">W</td><td class="sc">5 - 0</td></tr>
+          <tr><td>03.18 수</td><td>원정<span class="ba">A</span></td><td>포항 스틸러스</td><td class="rw">W</td><td class="sc">1 - 0</td></tr>
+          <tr><td>03.15 일</td><td>원정<span class="ba">A</span></td><td>제주 SK</td><td class="rw">W</td><td class="sc">2 - 1</td></tr>
+          <tr><td>03.08 일</td><td>홈<span class="bh">H</span></td><td>대전 하나</td><td class="rw">W</td><td class="sc">2 - 0</td></tr>
+          <tr><td>02.28 토</td><td>원정<span class="ba">A</span></td><td>인천 United</td><td class="rd">D</td><td class="sc">1 - 1</td></tr>
+        </tbody>
+      </table>
+      <p class="fnote">* FC서울 공식 홈페이지(fcseoul.com) 기준 · 4경기 4승 0무 0패 1위</p>
+    </div>
+    <div id="sch-upcoming" style="display:none">
+      <table class="mtbl">
+        <thead><tr><th>날짜</th><th>홈/원정</th><th>상대</th><th>시간</th><th>장소</th></tr></thead>
+        <tbody>
+          <tr class="next-row"><td>04.05 일</td><td>원정<span class="ba">A</span></td><td>FC 안양</td><td><span class="next-badge">NEXT</span>14:00</td><td>안양종합운동장</td></tr>
+          <tr><td>04.11 토</td><td>홈<span class="bh">H</span></td><td>전북 현대</td><td>14:00</td><td>서울월드컵경기장</td></tr>
+          <tr><td>04.15 수</td><td>홈<span class="bh">H</span></td><td>울산 HD</td><td>19:30</td><td>서울월드컵경기장</td></tr>
+          <tr><td>04.19 일</td><td>원정<span class="ba">A</span></td><td>김천 상무</td><td>14:00</td><td>김천종합운동장</td></tr>
+          <tr><td>05.05 화</td><td>홈<span class="bh">H</span></td><td>FC 안양</td><td>미정</td><td>서울월드컵경기장</td></tr>
+          <tr><td>05.09 토</td><td>원정<span class="ba">A</span></td><td>강원 FC</td><td>미정</td><td>강릉종합운동장</td></tr>
+          <tr><td>05.16 토</td><td>홈<span class="bh">H</span></td><td>부천 FC</td><td>미정</td><td>서울월드컵경기장</td></tr>
+        </tbody>
+      </table>
+      <p class="fnote">* FC서울 공식 홈페이지 기준 · 일정은 변경될 수 있습니다</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: ATTENDANCE ===== -->
+<div class="page" id="page-attendance">
+  <div class="wrap">
+    <div class="sec-head"><h2>경기 출석 체크</h2><div class="rule"></div><div class="tag">ATTENDANCE</div></div>
+    <div class="att-filter tabs">
+      <button class="tab on" onclick="filterAtt('all',this)">전체</button>
+      <button class="tab" onclick="filterAtt('home',this)">홈경기</button>
+      <button class="tab" onclick="filterAtt('away',this)">원정경기</button>
+    </div>
+    <div id="attGrid" class="att-grid"><div class="loading">불러오는 중...</div></div>
+  </div>
+</div>
+
+<!-- ===== PAGE: REVIEWS ===== -->
+<div class="page" id="page-reviews">
+  <div class="wrap">
+    <div class="sec-head"><h2>경기 후기</h2><div class="rule"></div><div class="tag">REVIEWS</div></div>
+    <div class="review-form" id="reviewFormWrap">
+      <div class="fg">
+        <label>경기 선택</label>
+        <select id="rv-match">
+          <option value="">경기를 선택하세요</option>
+          <option value="2026.03.22 vs 광주 (홈)">2026.03.22 vs 광주 (홈) 5-0</option>
+          <option value="2026.03.18 vs 포항 (원정)">2026.03.18 vs 포항 (원정) 1-0</option>
+          <option value="2026.03.15 vs 제주 (원정)">2026.03.15 vs 제주 (원정) 2-1</option>
+          <option value="2026.03.08 vs 대전 (홈)">2026.03.08 vs 대전 (홈) 2-0</option>
+          <option value="2026.02.28 vs 인천 (원정)">2026.02.28 vs 인천 (원정) 1-1</option>
+        </select>
+      </div>
+      <div class="stars" id="starRow">
+        <span class="star" data-v="1" onclick="setStar(1)">★</span>
+        <span class="star" data-v="2" onclick="setStar(2)">★</span>
+        <span class="star" data-v="3" onclick="setStar(3)">★</span>
+        <span class="star" data-v="4" onclick="setStar(4)">★</span>
+        <span class="star" data-v="5" onclick="setStar(5)">★</span>
+      </div>
+      <div class="fg">
+        <label>후기 내용</label>
+        <textarea id="rv-body" placeholder="경기 후기를 작성해 주세요! N석 분위기, 경기 소감 등 자유롭게..."></textarea>
+      </div>
+      <button class="btn-full" onclick="submitReview()">후기 등록</button>
+    </div>
+    <div id="reviewList" class="review-list"><div class="loading">불러오는 중...</div></div>
+  </div>
+</div>
+
+<!-- ===== PAGE: GALLERY ===== -->
+<div class="page" id="page-gallery">
+  <div class="wrap">
+    <div class="sec-head"><h2>갤러리</h2><div class="rule"></div><div class="tag">GALLERY</div></div>
+    <div class="gal-upload" onclick="document.getElementById('galInput').click()">
+      <div style="font-size:2rem;color:var(--faint)">📷</div>
+      <p>클릭해서 사진을 업로드하세요</p>
+      <div class="upload-preview" id="uploadPreview"></div>
+      <input type="file" id="galInput" accept="image/*" multiple onchange="previewImages(this)">
+    </div>
+    <div style="margin-bottom:1rem;display:flex;gap:8px">
+      <div class="fg" style="flex:1;margin:0"><input type="text" id="galCaption" placeholder="사진 설명 (선택)"></div>
+      <button class="btn-sm fill" style="height:42px;align-self:flex-end" onclick="uploadGallery()">업로드</button>
+    </div>
+    <div id="galGrid" class="gal-grid"><div class="loading">불러오는 중...</div></div>
+  </div>
+</div>
+
+<footer>
+  <strong>RBF12</strong> &nbsp;·&nbsp; FC서울 비공식 서포터즈 그룹 &nbsp;·&nbsp; SINCE 2009<br>
+  이 사이트는 FC서울 구단 및 공식 서포터즈 단체와 무관한 팬 커뮤니티입니다.
+</footer>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD4JGk9kL5FizuUf3PaFovhqa2DjBpE7iw",
+  authDomain: "rbf12-47563.firebaseapp.com",
+  projectId: "rbf12-47563",
+  storageBucket: "rbf12-47563.firebasestorage.app",
+  messagingSenderId: "1061908337630",
+  appId: "1:1061908337630:web:5a4fa8357ad3d100b3034f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ── 경기 데이터 ──
+const MATCHES = [
+  {id:'m1', date:'04.05 일', label:'04.05 vs 안양 (원정)', opponent:'FC 안양', type:'away', time:'14:00', venue:'안양종합운동장'},
+  {id:'m2', date:'04.11 토', label:'04.11 vs 전북 (홈)',   opponent:'전북 현대', type:'home', time:'14:00', venue:'서울월드컵경기장'},
+  {id:'m3', date:'04.15 수', label:'04.15 vs 울산 (홈)',   opponent:'울산 HD',   type:'home', time:'19:30', venue:'서울월드컵경기장'},
+  {id:'m4', date:'04.19 일', label:'04.19 vs 김천 (원정)', opponent:'김천 상무', type:'away', time:'14:00', venue:'김천종합운동장'},
+  {id:'m5', date:'05.05 화', label:'05.05 vs 안양 (홈)',   opponent:'FC 안양',   type:'home', time:'미정',  venue:'서울월드컵경기장'},
+  {id:'m6', date:'05.09 토', label:'05.09 vs 강원 (원정)', opponent:'강원 FC',   type:'away', time:'미정',  venue:'강릉종합운동장'},
+  {id:'m7', date:'05.16 토', label:'05.16 vs 부천 (홈)',   opponent:'부천 FC',   type:'home', time:'미정',  venue:'서울월드컵경기장'},
+];
+
+let currentUser = null;
+let currentUserData = null;
+let selectedStar = 0;
+let attFilter = 'all';
+let pendingFiles = [];
+
+// ── 인증 상태 ──
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+  if (user) {
+    const snap = await getDoc(doc(db,'users',user.uid));
+    currentUserData = snap.exists() ? snap.data() : {name: user.email};
+    document.getElementById('navUser').style.display = 'flex';
+    document.getElementById('navLoginBtn').style.display = 'none';
+    document.getElementById('navUserName').textContent = currentUserData.name;
+    closeModal();
+    updateMemberCount();
+  } else {
+    currentUserData = null;
+    document.getElementById('navUser').style.display = 'none';
+    document.getElementById('navLoginBtn').style.display = 'block';
+    document.getElementById('navUserName').textContent = '';
+  }
+  renderAttendance();
+  renderReviews();
+  renderGallery();
+});
+
+async function updateMemberCount() {
+  const snap = await getDocs(collection(db,'users'));
+  document.getElementById('memberCount').textContent = snap.size + '명';
+}
+
+// ── 회원가입 ──
+window.doRegister = async () => {
+  const name  = document.getElementById('rg-name').value.trim();
+  const birth = document.getElementById('rg-birth').value;
+  const email = document.getElementById('rg-email').value.trim();
+  const pw    = document.getElementById('rg-pw').value;
+  const err   = document.getElementById('rg-err');
+  err.style.display = 'none';
+  if (!name || !birth || !email || !pw) { showErr(err,'모든 항목을 입력해 주세요.'); return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pw);
+    await setDoc(doc(db,'users',cred.user.uid), {
+      name, birth, email,
+      joinedAt: serverTimestamp()
+    });
+  } catch(e) { showErr(err, firebaseErrMsg(e.code)); }
+};
+
+// ── 로그인 ──
+window.doLogin = async () => {
+  const email = document.getElementById('li-email').value.trim();
+  const pw    = document.getElementById('li-pw').value;
+  const err   = document.getElementById('li-err');
+  err.style.display = 'none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+  } catch(e) { showErr(err, firebaseErrMsg(e.code)); }
+};
+
+// ── 로그아웃 ──
+window.doLogout = async () => { await signOut(auth); };
+
+// ── 출석 체크 ──
+window.filterAtt = (f, btn) => {
+  attFilter = f;
+  document.querySelectorAll('.att-filter .tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderAttendance();
+};
+
+async function renderAttendance() {
+  const grid = document.getElementById('attGrid');
+  const filtered = attFilter === 'all' ? MATCHES : MATCHES.filter(m => m.type === attFilter);
+  
+  let html = '';
+  for (const m of filtered) {
+    let goCount = 0, noCount = 0, myStatus = null, myReason = '';
+    try {
+      const snap = await getDocs(collection(db, 'attendance', m.id, 'responses'));
+      snap.forEach(d => {
+        const data = d.data();
+        if (data.status === 'go') goCount++;
+        else noCount++;
+        if (currentUser && d.id === currentUser.uid) {
+          myStatus = data.status;
+          myReason = data.reason || '';
+        }
+      });
+    } catch(e) {}
+
+    const typeTag = m.type === 'home' ? `<span class="bh">H</span>` : `<span class="ba">A</span>`;
+    const goSel = myStatus === 'go' ? 'sel-go' : '';
+    const noSel = myStatus === 'no' ? 'sel-no' : '';
+    const myText = myStatus ? (myStatus === 'go' ? '✅ 참석 예정' : `❌ 불참 (${myReason||'사유 없음'})`) : '미응답';
+
+    html += `
+    <div class="att-card" id="att-${m.id}">
+      <div class="att-card-top">
+        <div class="att-date">${m.date} ${typeTag}</div>
+        <div class="att-match">vs ${m.opponent}</div>
+        <div class="att-loc">${m.time} · ${m.venue}</div>
+      </div>
+      <div class="att-card-bottom">
+        <div class="att-summary">
+          <span class="att-count go">참석 ${goCount}명</span>
+          <span class="att-count no">불참 ${noCount}명</span>
+        </div>
+        ${currentUser ? `
+          <div class="att-my">내 응답: <strong>${myText}</strong></div>
+          <div class="att-btns">
+            <button class="att-btn ${goSel}" onclick="setAtt('${m.id}','go')">✅ 참석</button>
+            <button class="att-btn ${noSel}" onclick="showReason('${m.id}')">❌ 불참</button>
+          </div>
+          <div class="att-reason" id="reason-${m.id}" style="display:${myStatus==='no'?'block':'none'}">
+            <input type="text" id="reason-input-${m.id}" placeholder="불참 사유 입력" value="${myReason}">
+            <button class="att-save" onclick="setAtt('${m.id}','no')">저장</button>
+          </div>
+        ` : `<div class="att-my" style="color:var(--faint)">로그인 후 출석 체크 가능</div>`}
+      </div>
+    </div>`;
+  }
+  grid.innerHTML = html || '<div class="empty">경기가 없습니다.</div>';
+}
+
+window.showReason = (mid) => {
+  const el = document.getElementById('reason-' + mid);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+};
+
+window.setAtt = async (mid, status) => {
+  if (!currentUser) { openModal('login'); return; }
+  const reason = status === 'no' ? (document.getElementById('reason-input-'+mid)?.value || '') : '';
+  try {
+    await setDoc(doc(db,'attendance',mid,'responses',currentUser.uid), {
+      status, reason,
+      name: currentUserData?.name || currentUser.email,
+      updatedAt: serverTimestamp()
+    });
+    renderAttendance();
+  } catch(e) { alert('저장 실패: ' + e.message); }
+};
+
+// ── 후기 ──
+window.setStar = (v) => {
+  selectedStar = v;
+  document.querySelectorAll('.star').forEach(s => {
+    s.classList.toggle('on', parseInt(s.dataset.v) <= v);
+  });
+};
+
+window.submitReview = async () => {
+  if (!currentUser) { openModal('login'); return; }
+  const match = document.getElementById('rv-match').value;
+  const body  = document.getElementById('rv-body').value.trim();
+  if (!match || !body) { alert('경기와 후기 내용을 입력해 주세요.'); return; }
+  try {
+    await addDoc(collection(db,'reviews'), {
+      match, body,
+      star: selectedStar,
+      name: currentUserData?.name || currentUser.email,
+      uid: currentUser.uid,
+      createdAt: serverTimestamp()
+    });
+    document.getElementById('rv-match').value = '';
+    document.getElementById('rv-body').value = '';
+    setStar(0);
+    renderReviews();
+  } catch(e) { alert('등록 실패: ' + e.message); }
+};
+
+async function renderReviews() {
+  const list = document.getElementById('reviewList');
+  try {
+    const q = query(collection(db,'reviews'), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    if (snap.empty) { list.innerHTML = '<div class="empty">아직 후기가 없습니다. 첫 후기를 남겨보세요!</div>'; return; }
+    let html = '';
+    snap.forEach(d => {
+      const v = d.data();
+      const stars = '★'.repeat(v.star||0) + '☆'.repeat(5-(v.star||0));
+      const date = v.createdAt?.toDate ? v.createdAt.toDate().toLocaleDateString('ko-KR') : '';
+      const canDel = currentUser && currentUser.uid === v.uid;
+      html += `
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-author">${v.name}</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="review-date">${date}</span>
+            ${canDel ? `<button class="review-del" onclick="delReview('${d.id}')">삭제</button>` : ''}
+          </div>
+        </div>
+        <div class="review-match">${v.match}</div>
+        <div style="color:#ffcc00;font-size:14px;margin-bottom:.5rem">${stars}</div>
+        <div class="review-body">${v.body.replace(/\n/g,'<br>')}</div>
+      </div>`;
+    });
+    list.innerHTML = html;
+  } catch(e) { list.innerHTML = '<div class="empty">불러오기 실패</div>'; }
+}
+
+window.delReview = async (id) => {
+  if (!confirm('후기를 삭제할까요?')) return;
+  await deleteDoc(doc(db,'reviews',id));
+  renderReviews();
+};
+
+// ── 갤러리 (Cloudinary 무료 업로드) ──
+const CLOUD_NAME = 'rbf12cloud'; // 나중에 Cloudinary 가입 후 교체
+const UPLOAD_PRESET = 'rbf12_unsigned';
+
+window.previewImages = (input) => {
+  pendingFiles = Array.from(input.files);
+  const prev = document.getElementById('uploadPreview');
+  prev.innerHTML = '';
+  pendingFiles.forEach(f => {
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(f);
+    prev.appendChild(img);
+  });
+};
+
+window.uploadGallery = async () => {
+  if (!currentUser) { openModal('login'); return; }
+  if (pendingFiles.length === 0) { alert('사진을 선택해 주세요.'); return; }
+  const caption = document.getElementById('galCaption').value.trim();
+  
+  // Cloudinary 미설정 시 Firestore에 base64로 저장 (소규모용)
+  for (const file of pendingFiles) {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        await addDoc(collection(db,'gallery'), {
+          imageData: e.target.result,
+          caption,
+          name: currentUserData?.name || currentUser.email,
+          uid: currentUser.uid,
+          createdAt: serverTimestamp()
+        });
+        renderGallery();
+      } catch(err) { alert('업로드 실패: ' + err.message); }
+    };
+    reader.readAsDataURL(file);
+  }
+  pendingFiles = [];
+  document.getElementById('uploadPreview').innerHTML = '';
+  document.getElementById('galCaption').value = '';
+  document.getElementById('galInput').value = '';
+};
+
+async function renderGallery() {
+  const grid = document.getElementById('galGrid');
+  try {
+    const q = query(collection(db,'gallery'), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    if (snap.empty) { grid.innerHTML = '<div class="empty">아직 사진이 없습니다!</div>'; return; }
+    let html = '';
+    snap.forEach(d => {
+      const v = d.data();
+      const date = v.createdAt?.toDate ? v.createdAt.toDate().toLocaleDateString('ko-KR') : '';
+      const canDel = currentUser && currentUser.uid === v.uid;
+      html += `
+      <div class="gal-item">
+        <img src="${v.imageData}" alt="${v.caption||''}">
+        ${canDel ? `<button class="gal-del" onclick="delPhoto('${d.id}')">삭제</button>` : ''}
+        <div class="gal-cap">
+          <div class="gc-author">${v.name}${v.caption ? ' · '+v.caption : ''}</div>
+          <div class="gc-date">${date}</div>
+        </div>
+      </div>`;
+    });
+    grid.innerHTML = html;
+  } catch(e) { grid.innerHTML = '<div class="empty">불러오기 실패</div>'; }
+}
+
+window.delPhoto = async (id) => {
+  if (!confirm('사진을 삭제할까요?')) return;
+  await deleteDoc(doc(db,'gallery',id));
+  renderGallery();
+};
+
+// ── 유틸 ──
+function firebaseErrMsg(code) {
+  const map = {
+    'auth/email-already-in-use':'이미 사용 중인 이메일입니다.',
+    'auth/invalid-email':'이메일 형식이 올바르지 않습니다.',
+    'auth/weak-password':'비밀번호는 6자 이상이어야 합니다.',
+    'auth/user-not-found':'등록되지 않은 이메일입니다.',
+    'auth/wrong-password':'비밀번호가 틀렸습니다.',
+    'auth/invalid-credential':'이메일 또는 비밀번호가 틀렸습니다.',
+  };
+  return map[code] || '오류가 발생했습니다. 다시 시도해 주세요.';
+}
+function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+
+window.showSchTab = (tab, btn) => {
+  document.getElementById('sch-past').style.display = tab==='past' ? '' : 'none';
+  document.getElementById('sch-upcoming').style.display = tab==='upcoming' ? '' : 'none';
+  document.querySelectorAll('#page-schedule .tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+};
+
+window.goPage = (page) => {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-'+page);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0,0);
+};
+
+window.openModal = (tab) => {
+  document.getElementById('authModal').classList.add('open');
+  switchTab(tab);
+};
+window.closeModal = () => { document.getElementById('authModal').classList.remove('open'); };
+window.switchTab = (tab) => {
+  document.getElementById('form-login').style.display = tab==='login' ? '' : 'none';
+  document.getElementById('form-register').style.display = tab==='register' ? '' : 'none';
+  document.getElementById('tab-login').classList.toggle('on', tab==='login');
+  document.getElementById('tab-register').classList.toggle('on', tab==='register');
+};
+
+document.getElementById('authModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('authModal')) closeModal();
+});
+
+updateMemberCount();
+</script>
+</body>
+</html>
